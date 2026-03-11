@@ -1,0 +1,60 @@
+[project]
+name = "holocron"
+version = "0.0.1"
+description = "Experimental tooling to stitch OpenGrep findings across file boundaries"
+authors = [{name = "Tim Gowan", email = "tgowan@endor.ai"}]
+readme = "README.md"
+requires-python = ">=3.13,<3.15"
+dependencies = []
+
+[project.scripts]
+holocron = "holocron.cli.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=6.2.5",
+    "ruff>=0.14.5",
+]
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/holocron"]
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "env",
+    "ENV",
+    "env.bak",
+    "venv.bak",
+    ".vscode",
+    ".idea",
+    ".pytest_cache",
+    ".tox",
+    ".nox",
+    ".ruff_cache",
+    "*.log",
+    "__pycache__",
+    "*.pyc",
+    "*.pyo",
+    "*.pyd",
+    "build",
+    "dist",
+    "*.egg-info",
+    ".coverage",
+    "coverage.xml",
+    ".hypothesis",
+    ".DS_Store",
+    "Thumbs.db"
+]

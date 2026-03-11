@@ -1,0 +1,44 @@
+rules:  
+  - id: python-parent-class-argparse-source
+    message: "Found an argparse source."
+    severity: ERROR  
+    languages:  
+      - python  
+    pattern-either:
+      - patterns:
+          - pattern-inside: |
+              class $CLASS:
+                ...
+                def $METHOD(...):
+                  ...
+          - pattern: $SOURCE(...)
+      - patterns:
+          - pattern-inside: |
+              class $CLASS:
+                ...
+          - pattern-not-inside: |
+              def $METHOD(...):
+                ...
+          - pattern: $SOURCE(...)
+      - patterns:
+          - pattern-not-inside: |
+              class $CLASS:
+                ...
+          - pattern-not-inside: |
+              def $FUNC(...):
+                ...
+          - pattern: $SOURCE(...)
+    metavariable-pattern:  
+      metavariable: $SOURCE  
+      patterns:  
+        - pattern-either:
+            - pattern: |
+                argparse.ArgumentParser()
+            - pattern: |
+                parser.add_argument(..., default=$SOURCE)
+            - pattern: |
+                parser.parse_args()
+    metadata:  
+      finding_type: source
+      version: 1.0.0  
+      description: "Detects an argparse source."  

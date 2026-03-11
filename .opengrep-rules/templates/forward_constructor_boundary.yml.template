@@ -1,0 +1,26 @@
+# Forward Constructor Boundary (MUST)
+# template_type: MUST
+# template_implication: "External input MUST cross object construction boundary."
+rules:
+  - id: {RULE_ID}
+    message: {MESSAGE}
+    severity: {SEVERITY}
+    languages: {LANGUAGES}
+    mode: {MODE}
+    options:
+{OPTIONS}
+    pattern-sources:
+{PATTERN_SOURCES}
+    pattern-propagators:
+{PATTERN_PROPAGATORS}
+    pattern-sinks:
+      - patterns:
+          - pattern-inside: |
+              class $CLASS:
+                def $METHOD(..., $INPUT, ...):
+                  ...
+          - pattern: "{CONSTRUCTOR_CALL}"
+        focus-metavariable: "$INPUT"
+    metadata:
+{METADATA}
+

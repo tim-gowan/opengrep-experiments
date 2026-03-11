@@ -1,0 +1,20 @@
+# template_type: MAY
+# template_implication: "Bridge rules MAY extend flows across inheritance boundaries."
+rules:
+  # Bridge inheritance flow from {PARENT_CLASS} to {CHILD_CLASS}
+  - id: {RULE_ID}
+    message: {MESSAGE}
+    severity: {SEVERITY}
+    languages: {LANGUAGES}
+    mode: {MODE}
+    options:
+{OPTIONS}
+    pattern-sources:
+{BRIDGE_SOURCES}
+    pattern-propagators:
+{PATTERN_PROPAGATORS}
+    pattern-sinks:
+{BRIDGE_SINKS}
+    metadata:
+{METADATA}
+

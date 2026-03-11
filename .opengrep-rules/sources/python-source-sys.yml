@@ -1,0 +1,64 @@
+rules:  
+  # Rule 1: Source-focused (for tracing forward from sources)  
+  - id: python-sys-inputs-all-flows  
+    message: "Taint source sys.argv[$INDEX] flows to sink"  
+    severity: WARNING  
+    languages: [python]  
+    mode: taint  
+    options:  
+      taint_intrafile: true  
+      taint_focus_on: source  # Reports at source location  
+    pattern-sources:  
+      - pattern: sys.argv[$INDEX]  
+      - pattern: sys.orig_argv[$INDEX]  
+      - pattern: sys.stdin  
+      - pattern: sys.stdin.read(...)  
+      - pattern: sys.stdin.readline(...)  
+      - pattern: sys._xoptions  
+      - pattern: sys.flags  
+      
+    pattern-propagators:  
+      - pattern: $SELF.$FIELD = $VALUE  
+        from: $VALUE  
+        to: $SELF.$FIELD  
+      - pattern: $OBJ.$FIELD  
+        from: $OBJ  
+        to: $OBJ.$FIELD  
+    pattern-sinks:  
+      - patterns:  
+          - pattern: $CLASS($INPUT)  
+          - focus-metavariable: $INPUT  
+      - patterns:  
+          - pattern: $OBJ.$METHOD($INPUT)  
+          - focus-metavariable: $INPUT  
+    metadata:  
+      finding_type: source  
+  
+  # Rule 2: Sink-focused (for boundary verification with metavars)  
+  - id: python-sys-inputs-to-classes  
+    message: "External input flows to $CLASS or $OBJ.$METHOD"  
+    severity: WARNING  
+    languages: [python]  
+    mode: taint  
+    options:  
+      taint_intrafile: true  
+      # No taint_focus_on = defaults to sink  
+    pattern-sources:  
+      - pattern: sys.argv[$INDEX]  
+      # ... other sources  
+    pattern-propagators:  
+      - pattern: $SELF.$FIELD = $VALUE  
+        from: $VALUE  
+        to: $SELF.$FIELD  
+      - pattern: $OBJ.$FIELD  
+        from: $OBJ  
+        to: $OBJ.$FIELD  
+    pattern-sinks:  
+      - patterns:  
+          - pattern: $CLASS($INPUT)  
+          - focus-metavariable: $INPUT  
+      - patterns:  
+          - pattern: $OBJ.$METHOD($INPUT)  
+          - focus-metavariable: $INPUT  
+    metadata:  
+      finding_type: sink

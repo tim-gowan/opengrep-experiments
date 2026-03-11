@@ -1,0 +1,26 @@
+rules:  
+  - id: python-parent-class-flask-source
+    message: "Found a Flask source"
+    severity: ERROR  
+    languages:  
+      - python  
+    patterns:
+    - pattern-inside: |
+        @$APP.route(...)
+        def $FUNC(...):
+          ...
+    - pattern-either:
+        - pattern: |
+            request.args.get(...)
+        - pattern: |
+            request.form.get(...)
+        - pattern: |
+            request.json[...]
+          
+    metadata:  
+      finding_type: source
+      version: 1.0.0  
+      description: "Detects an argument source inside a file."  
+      likelihood: HIGH  
+      impact: HIGH  
+      confidence: HIGH

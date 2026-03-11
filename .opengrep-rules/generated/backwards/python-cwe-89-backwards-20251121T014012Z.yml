@@ -1,0 +1,49 @@
+# template_type: MUST
+# template_implication: "Backward propagation MUST start at callee boundary."
+rules:
+- id: python-cwe-89-sink-taint-backward
+  message: Taint from CWE-89 sink back to boundary
+  severity: ERROR
+  languages:
+  - python
+  mode: taint
+  options:
+    taint_intrafile: true
+    symbolic_propagation: true
+  pattern-sources:
+  - pattern: "class $CLASS:\n    def __init__(..., $INPUT,...):\n        ..."
+  - pattern: "class $CLASS:\n    def $METHOD(..., $INPUT, ...):\n        ..."
+  - pattern: "class $CLASS:\n    $INPUT\n    ..."
+  - pattern: "def $FUNC($INPUT, ...):\n    ..."
+  - pattern: $INPUT
+  pattern-propagators:
+  - pattern: $SELF.$FIELD = $VALUE
+    from: $VALUE
+    to: $SELF
+    by-side-effect: true
+  - pattern: $OBJ.$FIELD
+    from: $OBJ
+    to: $RETURN
+  - pattern: $CLASS($INPUT)
+    from: $INPUT
+    to: $RETURN
+  - pattern: $OBJ.$METHOD($INPUT)
+    from: $INPUT
+    to: $RETURN
+  - pattern: $OBJ.$ATTR.$METHOD($INPUT)
+    from: $INPUT
+    to: $RETURN
+  pattern-sinks:
+  - patterns:
+    - pattern-either:
+      - pattern: cursor.execute($INPUT)
+      - pattern: cursor.executemany($INPUT)
+      - pattern: cursor.executescript($INPUT)
+      - pattern: connection.execute($INPUT)
+    focus-metavariable: $INPUT
+  metadata:
+    finding_type: sink
+    cwe:
+    - CWE-89
+    version: 20251121T014012Z
+    description: Probe-generated sink rule for CWE-89.

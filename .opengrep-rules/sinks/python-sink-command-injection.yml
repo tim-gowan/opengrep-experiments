@@ -1,0 +1,61 @@
+rules:  
+  - id: python-sink-taint-command-injection
+    message: "Found Command Injection Sink inside the class, method, or function."
+    severity: ERROR  
+    languages:  
+      - python  
+    mode: taint  
+    options:  
+      taint_intrafile: true  
+    pattern-sources:
+      - pattern: |  
+          class $CLASS:  
+            def __init__(..., $INPUT,...):  
+              ...  
+      - pattern: |  
+          class $CLASS:  
+            def $METHOD(..., $INPUT, ...):  
+              ...  
+      - pattern: |  
+          class $CLASS:  
+            $INPUT
+            ...
+      - pattern: |  
+          def $FUNC($INPUT, ...):  
+            ...
+      - pattern: |
+          $INPUT
+    pattern-propagators:  
+      # Track taint through any function call  
+      - pattern: $FUNC(..., $ARG, ...)  
+        from: $ARG  
+        to: $RETURN
+      # Track taint through any method call
+      - pattern: $OBJ.$METHOD(..., $ARG, ...)
+        from: $ARG
+        to: $RETURN
+      # Track taint through class constructor
+      - pattern: $CLASS(..., $ARG, ...)
+        from: $ARG
+        to: $RETURN
+      # Track taint through nested attribute access and method call
+      - pattern: $OBJ.$ATTR.$METHOD(..., $ARG, ...)
+        from: $ARG
+        to: $RETURN
+    pattern-sinks:      
+      - patterns:      
+          - pattern-either:    
+              - pattern: subprocess.run($CMD, ...)  
+              - pattern: subprocess.Popen($CMD, ...)    
+              - pattern: os.system($CMD)    
+              - pattern: os.popen($CMD, ...)    
+          - focus-metavariable: $CMD  
+    metadata: 
+      finding_type: sink
+      version: "1.0.0"  
+      description: "Detects taint flow to command injection sinks."  
+      cwe:  
+        - "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"  
+      likelihood: HIGH  
+      impact: HIGH  
+      confidence: HIGH

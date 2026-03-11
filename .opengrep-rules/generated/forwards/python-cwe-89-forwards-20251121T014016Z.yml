@@ -1,0 +1,59 @@
+# template_type: MAY
+# template_implication: "Bridge rules MAY extend flows across inheritance boundaries."
+  # Bridge inheritance flow from BenchmarkTest00001 to BenchmarkTest00002_Subclass
+rules:
+- id: python-cwe-89-bridge-benchmarktest00001-to-benchmarktest00002_subclass
+  message: Bridge inheritance boundary for taint flow
+  severity: INFO
+  languages:
+  - python
+  mode: taint
+  options:
+    taint_intrafile: true
+  pattern-sources:
+  - patterns:
+    - pattern-inside: "class BenchmarkTest00002_Subclass:\n    ...\n    BenchmarkTest00002_Subclass($INPUT)\n\
+        \    ..."
+    - pattern: $CLASS($INPUT)
+    focus-metavariable: $INPUT
+  - patterns:
+    - pattern: $OBJ.$METHOD($INPUT)
+    focus-metavariable: $INPUT
+  pattern-propagators:
+  - pattern: $SELF.$FIELD = $VALUE
+    from: $VALUE
+    to: $SELF
+    by-side-effect: true
+  - pattern: $OBJ.$FIELD
+    from: $OBJ
+    to: $RETURN
+  - pattern: $CLASS($INPUT)
+    from: $INPUT
+    to: $RETURN
+  - pattern: $OBJ.$METHOD($INPUT)
+    from: $INPUT
+    to: $RETURN
+  - pattern: $OBJ.$ATTR.$METHOD($INPUT)
+    from: $INPUT
+    to: $RETURN
+  - patterns:
+    - pattern: $CHILD($INPUT)
+    - pattern: $PARENT.__init__($INPUT)
+    from: $INPUT
+    to: $RETURN
+  - pattern: $OBJ.$METHOD($INPUT)
+    from: $OBJ
+    to: $INPUT
+  pattern-sinks:
+  - pattern: "class $CLASS:\n    def __init__(..., $INPUT,...):\n        ..."
+  - pattern: "class $CLASS:\n    def $METHOD(..., $INPUT, ...):\n        ..."
+  - pattern: "class $CLASS:\n    $INPUT\n    ..."
+  - pattern: "def $FUNC($INPUT, ...):\n    ..."
+  - pattern: $INPUT
+  metadata:
+    finding_type: source
+    cwe:
+    - CWE-89
+    version: 20251121T014016Z
+    description: Probe-generated source rule for CWE-89.
+    bridge: true
