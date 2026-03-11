@@ -1,0 +1,2 @@
+Scan trigger for Endor Labs location-field validation.
+Date: 2026-03-11

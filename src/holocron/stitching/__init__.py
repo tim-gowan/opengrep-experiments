@@ -1,0 +1,2 @@
+"""Stitching logic for Holocron."""
+

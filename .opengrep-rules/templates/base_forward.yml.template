@@ -1,0 +1,19 @@
+# template_type: MUST
+# template_implication: "Forward propagation MUST stop at callee boundary."
+rules:
+  - id: {RULE_ID}
+    message: {MESSAGE}
+    severity: {SEVERITY}
+    languages: {LANGUAGES}
+    mode: {MODE}
+    options:
+{OPTIONS}
+    pattern-sources:
+{PATTERN_SOURCES}
+    pattern-propagators:
+{PATTERN_PROPAGATORS}
+    pattern-sinks:
+{BOUNDARY_SINKS}
+    metadata:
+{METADATA}
+

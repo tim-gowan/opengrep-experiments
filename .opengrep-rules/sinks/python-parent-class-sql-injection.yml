@@ -1,0 +1,24 @@
+rules:  
+  - id: python-parent-class-sql-injection-sink
+    message: "Found SQL Injection Sink inside the class '$CLASS' in method '$METHOD'."
+    severity: ERROR  
+    languages:  
+      - python  
+    patterns:  
+      - pattern-inside: |  
+          class $CLASS:  
+            ...  
+      - pattern: |  
+          def $METHOD(...):  
+            ...  
+      - pattern-either:  
+          - pattern: sqlite3.connect(...) 
+    metadata:  
+      finding_type: sink
+      version: 1.0.0  
+      description: "Detects parent class of SQL injection sinks being called with unsanitized input."  
+      cwe:  
+        - "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"  
+      likelihood: HIGH  
+      impact: HIGH  
+      confidence: HIGH

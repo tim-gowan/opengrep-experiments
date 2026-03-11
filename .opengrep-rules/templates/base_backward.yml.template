@@ -1,0 +1,19 @@
+# template_type: MUST
+# template_implication: "Backward propagation MUST start at callee boundary."
+rules:
+  - id: {RULE_ID}
+    message: {MESSAGE}
+    severity: {SEVERITY}
+    languages: {LANGUAGES}
+    mode: {MODE}
+    options:
+{OPTIONS}
+    pattern-sources:
+{BOUNDARY_SOURCES}
+    pattern-propagators:
+{PATTERN_PROPAGATORS}
+    pattern-sinks:
+{SINK_PATTERNS}
+    metadata:
+{METADATA}
+
