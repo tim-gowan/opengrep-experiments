@@ -211,6 +211,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# JWK benchmark corpus (regenerate locally; see src/jwk-secrets/README.md)
+src/jwk-secrets/generated/
+
 # Holocron outputs
 outputs/
 
