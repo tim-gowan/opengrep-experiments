@@ -5,7 +5,9 @@ description = "Experimental tooling to stitch OpenGrep findings across file boun
 authors = [{name = "Tim Gowan", email = "tgowan@endor.ai"}]
 readme = "README.md"
 requires-python = ">=3.13,<3.15"
-dependencies = []
+dependencies = [
+    "h11"=="0.14.0"
+]
 
 [project.scripts]
 holocron = "holocron.cli.main:main"
